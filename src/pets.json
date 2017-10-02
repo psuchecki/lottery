@@ -1,7 +1,7 @@
 [
   {
     "id": 0,
-    "name": "Frieda",
+    "name": "0xc459b3ea2c661b696146b042362bee650f4ac98d",
     "picture": "images/scottish-terrier.jpeg",
     "age": 3,
     "breed": "Scottish Terrier",
@@ -9,7 +9,7 @@
   },
   {
     "id": 1,
-    "name": "Gina",
+    "name": "0xb73762d3af459b55d5554f9afb7e18c79aa06cf0",
     "picture": "images/scottish-terrier.jpeg",
     "age": 3,
     "breed": "Scottish Terrier",
@@ -17,7 +17,7 @@
   },
   {
     "id": 2,
-    "name": "Collins",
+    "name": "0xd2b30d326008dcefeac7ccf2ba2ae0579ad16150",
     "picture": "images/french-bulldog.jpeg",
     "age": 2,
     "breed": "French Bulldog",
