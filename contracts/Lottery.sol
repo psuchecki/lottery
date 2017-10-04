@@ -2,44 +2,56 @@ pragma solidity ^0.4.4;
 
 
 contract Lottery {
+	event PrintWinnerIndex(uint winner_index);
+
+	uint constant ONE_ETHER = 1000000000000000000;
+
 	address[16] public members;
 
+	address public winner;
 	uint public memberCount = 0;
-	uint public nonce = 0;
-	uint lotteryIndex;
 
-	event PrintValues(uint lotteryIndex2, uint nonce2);
+	bool public lotteryOpen = true;
 
-	function signForLottery(address memberAddress) public returns (bool) {
+
+	modifier lotteryIsOpen() {require(lotteryOpen);
+		_;}
+	modifier lotteryIsFinished() {require(!lotteryOpen);
+		_;}
+
+	function signForLottery() payable lotteryIsOpen public returns (bool) {
 		require(memberCount <= 15);
-		members[memberCount] = memberAddress;
+		require(msg.value == ONE_ETHER);
+
+		members[memberCount] = msg.sender;
 		memberCount++;
 
 		return true;
 	}
 
-	function selectLotteryWinner() public returns (address) {
-		address winner;
-		nonce++;
-		lotteryIndex = uint(sha3(nonce))%(0+15);
+	function selectLotteryWinner() lotteryIsOpen public returns (address) {
+		require(memberCount > 0);
 
-		uint spinCount = 0;
-		for (uint i = 0; i < lotteryIndex; i++) {
-			winner = members[spinCount];
-			spinCount = (spinCount + 1) % memberCount;
-		}
+		uint winnerIndex = uint(block.blockhash(block.number - 1)) % memberCount;
+		winner = members[winnerIndex];
+		lotteryOpen = false;
 
-		PrintValues(lotteryIndex, nonce);
+		PrintWinnerIndex(winnerIndex);
 		return winner;
 	}
+
+	function withdrawPrice() lotteryIsFinished {
+		require(msg.sender == winner);
+
+		//memberCount is equal to amount of deposited ether;
+		msg.sender.transfer(memberCount * ONE_ETHER);
+		winner = address(0);
+		lotteryOpen = true;
+		memberCount = 0;
+	}
+
 
 	function getMembers() public returns (address[16]) {
 		return members;
 	}
-
-	function getLotteryIndex() public returns (uint) {
-		return lotteryIndex;
-	}
-
-
 }

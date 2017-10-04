@@ -18,6 +18,8 @@ App = {
 
         petsRow.append(petTemplate.html());
       }
+
+
     });
 
     return App.initWeb3();
