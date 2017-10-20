@@ -5,19 +5,13 @@ contract Lottery {
 	event PrintWinnerIndex(uint winner_index);
 
 	uint constant ONE_ETHER = 1000000000000000000;
-
 	address[16] public members;
-
 	address public winner;
 	uint public memberCount = 0;
-
 	bool public lotteryOpen = true;
 
-
-	modifier lotteryIsOpen() {require(lotteryOpen);
-		_;}
-	modifier lotteryIsFinished() {require(!lotteryOpen);
-		_;}
+	modifier lotteryIsOpen() {require(lotteryOpen); _;}
+	modifier lotteryIsFinished() {require(!lotteryOpen); _;}
 
 	function signForLottery() payable lotteryIsOpen public returns (bool) {
 		require(memberCount <= 15);

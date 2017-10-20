@@ -85,19 +85,18 @@ contract('Lottery', function (accounts) {
             return lottery.selectLotteryWinner({from: account});
         }).then(function () {
             return lottery.winner.call();
-        })
-            .then(function (winner) {
-                winnerAddress = winner;
-                winnerBalanceBeforeWin = web3.fromWei(web3.eth.getBalance(winner), 'ether');
-                // console.log("and the winner is = " + winner);
-                // console.log("winner balance before winning = " + winnerBalanceBeforeWin);
-                return lottery.withdrawPrice({from: winner});
-            }).then(function () {
-                var winnerBalanceAfterWin = web3.fromWei(web3.eth.getBalance(winnerAddress))
-                // console.log("winner balance after winning = " + winnerBalanceAfterWin);
-                var difference = Math.round(winnerBalanceAfterWin.toFixed(0)) - Math.round(winnerBalanceBeforeWin.toFixed(0));
-                // console.log("difference = " + difference);
-                assert.equal(difference, 3, "Wrong price value has been withdrawn");
-            });
+        }).then(function (winner) {
+            winnerAddress = winner;
+            winnerBalanceBeforeWin = web3.fromWei(web3.eth.getBalance(winner), 'ether');
+            // console.log("and the winner is = " + winner);
+            // console.log("winner balance before winning = " + winnerBalanceBeforeWin);
+            return lottery.withdrawPrice({from: winner});
+        }).then(function () {
+            var winnerBalanceAfterWin = web3.fromWei(web3.eth.getBalance(winnerAddress))
+            // console.log("winner balance after winning = " + winnerBalanceAfterWin);
+            var difference = Math.round(winnerBalanceAfterWin.toFixed(0)) - Math.round(winnerBalanceBeforeWin.toFixed(0));
+            // console.log("difference = " + difference);
+            assert.equal(difference, 3, "Wrong price value has been withdrawn");
+        });
     });
 });
