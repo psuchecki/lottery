@@ -4,7 +4,7 @@ pragma solidity ^0.4.4;
 contract Lottery {
 	event PrintWinnerIndex(uint winner_index);
 
-	uint constant ONE_ETHER = 1000000000000000000;
+	uint constant ONE_ETHER = 100000000000000000;
 	address[16] public members;
 	address public winner;
 	uint public memberCount = 0;
@@ -16,6 +16,7 @@ contract Lottery {
 	function signForLottery() payable lotteryIsOpen public returns (bool) {
 		require(memberCount <= 15);
 		require(msg.value == ONE_ETHER);
+		require(isNewMember(msg.sender));
 
 		members[memberCount] = msg.sender;
 		memberCount++;
@@ -32,6 +33,15 @@ contract Lottery {
 
 		PrintWinnerIndex(winnerIndex);
 		return winner;
+	}
+
+	function isNewMember(address member) constant returns (bool) {
+		for(uint i = 0; i < memberCount; i++) {
+			if (members[i] == member) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	function withdrawPrice() lotteryIsFinished {

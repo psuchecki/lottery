@@ -9,7 +9,6 @@
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/lottery.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -22,29 +21,41 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-12 col-sm-8 col-sm-push-2">
-            <h1 class="text-center">Solidity Lottery</h1>
+            <h4 class="text-center">Lottery implementation using Smart Contract DApp</h4>
             <hr/>
             <br/>
         </div>
     </div>
 
-    <div class="text-center">
-        <button id="runLottery" class="btn btn-primary btn-default" type="button">Run Lottery</button>
-        <hr/>
-        <div class="table table-responsive">
-            <table id="membersTable" class="table table-responsive table-striped table-bordered">
-                <thead>
-                <tr>
-                    <th class="text-center">#</th>
-                    <th class="text-center">Address</th>
-                    <th class="text-center">Balance</th>
-                    <th class="text-center">Sign for Lottery</th>
-                </tr>
-                </thead>
-                <tbody>
+    <div class="alert alert-info">
+        <p><b>Lottery rules:</b></p>
+        <ul>
+            <li>Run Lottery button is available when at least one user sign for lottery</li>
+            <li>Each address can sign only once</li>
+            <li>Only 0.1 ether membership fee is accepted to take part in lottery</li>
+            <li>Winner's price is a sum of all membership fees</li>
+            <li>New lottery iteration is available after winner withdraw his price</li>
+        </ul>
+    </div>
+    <div class="text-center panel panel-default">
+        <div class="panel-body">
+            <button id="runLottery" class="btn btn-primary btn-default" type="button">Run Lottery</button>
+            <hr/>
+            <div class="table table-responsive tab">
+                <table id="membersTable" class="table table-responsive table-striped table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th class="text-center">Address</th>
+                        <th class="text-center">Balance</th>
+                        <th class="text-center">Sign for Lottery</th>
+                    </tr>
+                    </thead>
+                    <tbody>
 
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

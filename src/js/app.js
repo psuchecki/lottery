@@ -5,7 +5,6 @@ App = {
     contracts: {},
 
     init: function () {
-
         return App.initWeb3();
     },
 
@@ -63,8 +62,10 @@ App = {
             App.refreshState();
         }).catch(function (err) {
             console.log(err.message);
+            App.refreshState();
         });
     },
+
     handleMemberAction: function () {
         var buttonText = $(event.target).text();
         if (buttonText == "Sign") {
@@ -73,6 +74,7 @@ App = {
             App.withdrawPrice();
         }
     },
+
     bindEvents: function () {
         $(document).on('click', "#runLottery", App.selectLotteryWinner);
         $(document).on('click', ".memberActionButton", App.handleMemberAction);
@@ -85,34 +87,33 @@ App = {
             if (error) {
                 console.log(error);
             }
-            var memberTemplate = $('#memberTemplate');
-            var membersTable = $('#membersTable');
+            var memberTemplate = $($('#memberTemplate').html());
+            var membersTableTbody = $('#membersTable tbody');
 
             for (i = 0; i < accounts.length; i++) {
-                membersTable.append(memberTemplate.html());
+                var memberTemplateClone = memberTemplate.clone();
+                memberTemplateClone.find('.memberNumber').text(i);
+                memberTemplateClone.find('.memberAddress').text(accounts[i]);
+                var memberBalance = App.getAccountBalance(i);
+                memberTemplateClone.find('.memberBalance').text(memberBalance);
+                memberTemplateClone.find('.memberActionButton').attr('data-id', i);
 
-                row = membersTable.find('tr').eq(i+1);
-
-                row.find('.memberNumber').text(i);
-                row.find('.memberAddress').text(accounts[i]);
-                var memberBalance = web3.fromWei(web3.eth.getBalance(accounts[i]), 'ether');
-                row.find('.memberBalance').text(Math.round(memberBalance.toFixed(2)));
-                row.find('.memberActionButton').attr('data-id', i);
+                membersTableTbody.append(memberTemplateClone);
             }
         });
     },
 
     markWinner: function (winner) {
         if (winner == '0x0000000000000000000000000000000000000000') {
-            $(".memberRow").removeClass("winnerRow");
-
+            $(".memberRow").removeClass("success");
             return;
         }
 
-        var winnerRow = $('.memberAddress').filter(function() {
+        var winnerRow = $('.memberAddress').filter(function () {
             return $(this).text() == winner;
         }).closest("tr");
-        winnerRow.addClass("winnerRow");
+        winnerRow.removeClass("info");
+        winnerRow.addClass("success");
 
         winnerRow.find('button').text('Withdraw').attr('disabled', false);
     },
@@ -129,17 +130,19 @@ App = {
             App.refreshState();
         }).catch(function (err) {
             console.log(err.message);
+            App.refreshState();
         });
     },
 
     getAccountBalance: function (index) {
-        return Math.round(web3.fromWei(web3.eth.getBalance(web3.eth.accounts[index]), 'ether'));
+        return web3.fromWei(web3.eth.getBalance(web3.eth.accounts[index]), 'ether').toFixed(2);
     },
 
     markMember: function (member) {
         var memberRow = $('.memberAddress').filter(function () {
             return $(this).text() == member;
         }).closest("tr");
+        memberRow.addClass("info");
         memberRow.find('button').text('Signed...').attr('disabled', true);
     }
 
@@ -157,11 +160,12 @@ App = {
             lotteryInstance = instance;
 
             return lotteryInstance.memberCount.call();
-        }).then(function(count) {
+        }).then(function (count) {
             memberCount = count;
             return lotteryInstance.getMembers.call();
         }).then(function (members) {
             $(".memberActionButton").text('Sign').attr('disabled', false);
+            $(".memberRow").removeClass('info');
             for (i = 0; i < memberCount; i++) {
                 App.markMember(members[i]);
             }
@@ -179,6 +183,7 @@ App = {
             }
         }).catch(function (err) {
             console.log(err.message);
+            App.refreshState();
         });
 
     },
@@ -196,16 +201,17 @@ App = {
             }
 
             var account = accounts[accountIndex];
-            var oneEther = web3.toWei(1, 'ether');
+            var membershipFee = web3.toWei(0.1, 'ether');
 
             App.contracts.Lottery.deployed().then(function (instance) {
                 lotteryInstance = instance;
 
-                return lotteryInstance.signForLottery({from: account, value: oneEther});
+                return lotteryInstance.signForLottery({from: account, value: membershipFee});
             }).then(function () {
                 return App.refreshState();
             }).catch(function (err) {
                 console.log(err.message);
+                App.refreshState();
             });
         });
     },

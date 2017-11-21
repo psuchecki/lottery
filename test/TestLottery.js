@@ -13,7 +13,7 @@ contract('Lottery', function (accounts) {
 
     var provider = new web3.providers.HttpProvider("http://localhost:8545");
     web3.setProvider(provider);
-    const oneEther = web3.toWei(1, 'ether');
+    const membershipFee = web3.toWei(0.1, 'ether');
 
     beforeEach(function () {
         return Lottery.new().then(function (instance) {
@@ -36,7 +36,7 @@ contract('Lottery', function (accounts) {
     it("Should select single lottery winner", function () {
 
         return Lottery.deployed().then(function () {
-            return lottery.signForLottery({from: account, value: oneEther});
+            return lottery.signForLottery({from: account, value: membershipFee});
         }).then(function () {
             return lottery.selectLotteryWinner({from: account});
         }).then(function () {
@@ -48,17 +48,17 @@ contract('Lottery', function (accounts) {
 
     it("Should sign multiple members", function () {
         return Lottery.deployed().then(function () {
-            return lottery.signForLottery({from: account, value: oneEther});
+            return lottery.signForLottery({from: account, value: membershipFee});
         }).then(function () {
-            return lottery.signForLottery({from: account1, value: oneEther});
+            return lottery.signForLottery({from: account1, value: membershipFee});
         }).then(function () {
-            return lottery.signForLottery({from: account2, value: oneEther});
+            return lottery.signForLottery({from: account2, value: membershipFee});
         }).then(function () {
-            return lottery.signForLottery({from: account3, value: oneEther});
+            return lottery.signForLottery({from: account3, value: membershipFee});
         }).then(function () {
-            return lottery.signForLottery({from: account4, value: oneEther});
+            return lottery.signForLottery({from: account4, value: membershipFee});
         }).then(function () {
-            return lottery.signForLottery({from: account5, value: oneEther});
+            return lottery.signForLottery({from: account5, value: membershipFee});
         }).then(function () {
             return lottery.getMembers.call();
         }).then(function (members) {
@@ -76,11 +76,11 @@ contract('Lottery', function (accounts) {
         var winnerBalanceBeforeWin;
         var winnerAddress;
         return Lottery.deployed().then(function () {
-            return lottery.signForLottery({from: account, value: oneEther});
+            return lottery.signForLottery({from: account, value: membershipFee});
         }).then(function () {
-            return lottery.signForLottery({from: account1, value: oneEther});
+            return lottery.signForLottery({from: account1, value: membershipFee});
         }).then(function () {
-            return lottery.signForLottery({from: account2, value: oneEther});
+            return lottery.signForLottery({from: account2, value: membershipFee});
         }).then(function () {
             return lottery.selectLotteryWinner({from: account});
         }).then(function () {
@@ -94,9 +94,9 @@ contract('Lottery', function (accounts) {
         }).then(function () {
             var winnerBalanceAfterWin = web3.fromWei(web3.eth.getBalance(winnerAddress))
             // console.log("winner balance after winning = " + winnerBalanceAfterWin);
-            var difference = Math.round(winnerBalanceAfterWin.toFixed(0)) - Math.round(winnerBalanceBeforeWin.toFixed(0));
+            var difference = winnerBalanceAfterWin - winnerBalanceBeforeWin;
             // console.log("difference = " + difference);
-            assert.equal(difference, 3, "Wrong price value has been withdrawn");
+            assert.equal(difference.toFixed(2), 0.3, "Wrong price value has been withdrawn");
         });
     });
 });
