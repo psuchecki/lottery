@@ -20,26 +20,8 @@ App = {
             // Get the necessary contract artifact file and instantiate it with truffle-contract.
             var LotteryArtifact = data;
             App.contracts.Lottery = TruffleContract(LotteryArtifact);
-
             // Set the provider for our contract.
             App.contracts.Lottery.setProvider(App.web3Provider);
-            // App.contracts.Lottery.deployed().then(function (instance) {
-            //     var printValuesEvent = instance.PrintValues(null, {fromBlock: 0, toBlock: 'latest'});
-            //     printValuesEvent.watch(function (error, result) {
-            //         alert("index = " + result.args.lotteryIndex + "nonce = " + result.args.nonce2);
-            //         if (!error)
-            //             console.log(result);
-            //     });
-            //
-            //     instance.allEvents({fromBlock: 0, toBlock: 'latest'}, function (error, log) {
-            //         alert("allEvent");
-            //         if (!error)
-            //             console.log(log);
-            //     });
-            // });
-
-
-            // Use our contract to retieve and mark the adopted pets.
             return App.refreshState();
         });
 
@@ -94,7 +76,7 @@ App = {
                 var memberTemplateClone = memberTemplate.clone();
                 memberTemplateClone.find('.memberNumber').text(i);
                 memberTemplateClone.find('.memberAddress').text(accounts[i]);
-                var memberBalance = App.getAccountBalance(i);
+                var memberBalance = App.getAccountBalance(accounts[i]);
                 memberTemplateClone.find('.memberBalance').text(memberBalance);
                 memberTemplateClone.find('.memberActionButton').attr('data-id', i);
 
@@ -134,8 +116,8 @@ App = {
         });
     },
 
-    getAccountBalance: function (index) {
-        return web3.fromWei(web3.eth.getBalance(web3.eth.accounts[index]), 'ether').toFixed(2);
+    getAccountBalance: function (address) {
+        return web3.fromWei(web3.eth.getBalance(address), 'ether').toFixed(2);
     },
 
     markMember: function (member) {
@@ -146,12 +128,17 @@ App = {
         memberRow.find('button').text('Signed...').attr('disabled', true);
     }
 
-    , refreshState: function () {
-        for (i = 0; i < web3.eth.accounts.length; i++) {
-            var row = $('#membersTable').find('tr').eq(i + 1);
-            var memberBalance = this.getAccountBalance(i);
-            row.find('.memberBalance').text(memberBalance);
-        }
+    ,refreshState: function () {
+        web3.eth.getAccounts(function (error, accounts) {
+            if (error) {
+                console.log(error);
+            }
+            for (i = 0; i < accounts.length; i++) {
+                var row = $('#membersTable').find('tr').eq(i + 1);
+                var memberBalance = App.getAccountBalance(accounts[i]);
+                row.find('.memberBalance').text(memberBalance);
+            }
+        });
 
         var memberCount;
         var lotteryInstance;
@@ -187,7 +174,6 @@ App = {
         });
 
     },
-
 
     signForLottery: function () {
         event.preventDefault();
