@@ -41,10 +41,10 @@ App = {
 
             return lotteryInstance.withdrawPrice({from: winnerAccount});
         }).then(function () {
-            App.refreshState();
+            App.refreshState(accountIndex);
         }).catch(function (err) {
             console.log(err.message);
-            App.refreshState();
+            App.refreshState(accountIndex);
         });
     },
 
@@ -128,17 +128,12 @@ App = {
         memberRow.find('button').text('Signed...').attr('disabled', true);
     }
 
-    ,refreshState: function () {
-        web3.eth.getAccounts(function (error, accounts) {
-            if (error) {
-                console.log(error);
-            }
-            for (i = 0; i < accounts.length; i++) {
-                var row = $('#membersTable').find('tr').eq(i + 1);
-                var memberBalance = App.getAccountBalance(accounts[i]);
-                row.find('.memberBalance').text(memberBalance);
-            }
-        });
+    ,refreshState: function (index) {
+        if (index != undefined) {
+            var row = $('#membersTable').find('tr').eq(index + 1);
+            var memberBalance = App.getAccountBalance(web3.eth.accounts[index]);
+            row.find('.memberBalance').text(memberBalance);
+        }
 
         var memberCount;
         var lotteryInstance;
@@ -170,7 +165,6 @@ App = {
             }
         }).catch(function (err) {
             console.log(err.message);
-            App.refreshState();
         });
 
     },
@@ -194,10 +188,10 @@ App = {
 
                 return lotteryInstance.signForLottery({from: account, value: membershipFee});
             }).then(function () {
-                return App.refreshState();
+                return App.refreshState(accountIndex);
             }).catch(function (err) {
                 console.log(err.message);
-                App.refreshState();
+                App.refreshState(accountIndex);
             });
         });
     },
