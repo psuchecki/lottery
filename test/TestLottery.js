@@ -21,18 +21,6 @@ contract('Lottery', function (accounts) {
         });
     });
 
-    // afterEach(function () {
-    //     lottery.memberCount.call().then(function (memberCount) {
-    //         console.log("memberCount = " + memberCount);
-    //     });
-    //     lottery.winner.call().then(function (winner) {
-    //         console.log("winner = " + winner);
-    //     });
-    //     lottery.lotteryOpen.call().then(function (lotteryOpen) {
-    //         console.log("lotteryOpen = " + lotteryOpen);
-    //     });
-    // });
-
     it("Should select single lottery winner", function () {
 
         return Lottery.deployed().then(function () {
@@ -88,14 +76,10 @@ contract('Lottery', function (accounts) {
         }).then(function (winner) {
             winnerAddress = winner;
             winnerBalanceBeforeWin = web3.fromWei(web3.eth.getBalance(winner), 'ether');
-            // console.log("and the winner is = " + winner);
-            // console.log("winner balance before winning = " + winnerBalanceBeforeWin);
             return lottery.withdrawPrice({from: winner});
         }).then(function () {
             var winnerBalanceAfterWin = web3.fromWei(web3.eth.getBalance(winnerAddress))
-            // console.log("winner balance after winning = " + winnerBalanceAfterWin);
             var difference = winnerBalanceAfterWin - winnerBalanceBeforeWin;
-            // console.log("difference = " + difference);
             assert.equal(difference.toFixed(2), 0.3, "Wrong price value has been withdrawn");
         });
     });
