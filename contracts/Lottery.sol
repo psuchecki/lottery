@@ -35,7 +35,7 @@ contract Lottery {
 		return winner;
 	}
 
-	function isNewMember(address member) constant returns (bool) {
+	function isNewMember(address member) private constant returns (bool) {
 		for(uint i = 0; i < memberCount; i++) {
 			if (members[i] == member) {
 				return false;
@@ -47,11 +47,11 @@ contract Lottery {
 	function withdrawPrice() lotteryIsFinished {
 		require(msg.sender == winner);
 
-		//memberCount is equal to amount of deposited ether;
-		msg.sender.transfer(memberCount * ONE_TENTH_ETHER);
 		winner = address(0);
 		lotteryOpen = true;
 		memberCount = 0;
+		//memberCount is equal to amount of deposited ether;
+		msg.sender.transfer(memberCount * ONE_TENTH_ETHER);
 	}
 
 
