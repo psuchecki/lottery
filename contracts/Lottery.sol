@@ -4,7 +4,6 @@ pragma solidity ^0.4.4;
 contract Lottery {
 	event PrintWinnerIndex(uint winner_index);
 
-	uint constant ONE_TENTH_ETHER = 100000000000000000;
 	address[16] public members;
 	address public winner;
 	uint public memberCount = 0;
@@ -15,7 +14,7 @@ contract Lottery {
 
 	function signForLottery() payable lotteryIsOpen public returns (bool) {
 		require(memberCount <= 15);
-		require(msg.value == ONE_TENTH_ETHER);
+		require(msg.value == 0.1 ether);
 		require(isNewMember(msg.sender));
 
 		members[memberCount] = msg.sender;
@@ -44,14 +43,15 @@ contract Lottery {
 		return true;
 	}
 
-	function withdrawPrice() lotteryIsFinished {
+	function withdrawPrice() public lotteryIsFinished {
 		require(msg.sender == winner);
 
+		uint multiplier = memberCount;
 		winner = address(0);
 		lotteryOpen = true;
 		memberCount = 0;
 		//memberCount is equal to amount of deposited ether;
-		msg.sender.transfer(memberCount * ONE_TENTH_ETHER);
+		msg.sender.transfer(multiplier * 0.1 ether);
 	}
 
 
