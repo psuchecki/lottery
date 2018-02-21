@@ -9,7 +9,7 @@ App = {
     },
 
     initWeb3: function () {
-        App.web3Provider = new web3.providers.HttpProvider('http://localhost:8545');
+        App.web3Provider = new web3.providers.HttpProvider('http://localhost:7545');
         web3 = new Web3(App.web3Provider);
 
         return App.initContract();
