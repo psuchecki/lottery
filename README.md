@@ -29,5 +29,4 @@ truffle test
 ```
 
 ## Demo
-Do not have to donwload, you can watch on site
-https://www.dropbox.com/s/5oa3neogq5vzxi6/lottery.flv?dl=0
+https://vimeo.com/256911654
